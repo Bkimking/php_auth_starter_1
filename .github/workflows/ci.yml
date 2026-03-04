@@ -38,13 +38,16 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Run syntax check
-        run: find . -name "*.php" -exec php -l {} \;
+        run: find . -name "*.php" -not -path "./vendor/*" -exec php -l {} \;
 
       - name: Check for security issues
         run: |
-          # Basic security checks
           echo "Checking for hardcoded secrets..."
-          if grep -r "password\|secret\|key" --include="*.php" . | grep -v "password_hash\|password_verify\|reset_token\|csrf_token"; then
+          if grep -rn \
+            --include="*.php" \
+            --exclude-dir=vendor \
+            -E "(password|secret|api_key)\s*=\s*['\"][^'\"]{4,}['\"]" \
+            . | grep -v "\$_POST\|\$_GET\|\$_SESSION\|\$_ENV\|getenv\|password_hash\|password_verify\|\.env"; then
             echo "⚠️ Potential hardcoded secrets found"
             exit 1
           else
