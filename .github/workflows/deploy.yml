@@ -57,12 +57,5 @@ jobs:
                 git reset --hard origin/main
             fi
 
-            # Laravel deployment
-            # composer install --no-dev --optimize-autoloader
-            php artisan migrate --force
-            # php artisan db:seed
-            php artisan optimize:clear
-            php artisan optimize
-
             echo "Deployment complete"
           EOF
