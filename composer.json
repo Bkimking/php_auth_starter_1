@@ -1,5 +1,6 @@
 {
     "name": "student/auth-starter",
+    "license": "MIT",
     "description": "Beginner-friendly PHP authentication starter project",
     "type": "project",
     "require": {

@@ -11,20 +11,20 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: "8.2"
           extensions: mbstring, pdo, mysql
-          
+
       - name: Validate composer files
         run: composer validate --no-check-all --strict
-        
+
       - name: Cache Composer packages
         id: composer-cache
         uses: actions/cache@v3
@@ -33,13 +33,13 @@ jobs:
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-php-
-            
+
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
-        
+
       - name: Run syntax check
         run: find . -name "*.php" -exec php -l {} \;
-        
+
       - name: Check for security issues
         run: |
           # Basic security checks
@@ -55,11 +55,11 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Trigger deployment
         uses: peter-evans/repository-dispatch@v2
         with:
