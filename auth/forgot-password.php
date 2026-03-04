@@ -58,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // bin2hex(random_bytes(32)) = 64 character hex string
                 $token = bin2hex(random_bytes(32));
 
-                // Token expires 1 hour from now
-                $expiry = date('Y-m-d H:i:s', time() + 3600);
+                // // Token expires 1 hour from now
+                // $expiry = date('Y-m-d H:i:s', time() + 3600);
 
                 // Store the token and expiry in the database
                 $stmt = $pdo->prepare('
