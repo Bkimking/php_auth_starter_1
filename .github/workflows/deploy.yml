@@ -1,0 +1,68 @@
+name: Deploy auth_starter_1
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Load SSH key
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 3. Add server fingerprint
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      # # 4. Test SSH connection
+      # - name: SSH Test
+      #   run: |
+      #     ssh -T -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} exit
+
+      # 5. Deployment commands
+      - name: Deploy auth_starter_1
+        run: |
+          ssh -T -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            # Start agent & add GitHub deploy key
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_ed25519_authstarter1
+            # eval "$(ssh-agent -s)" # Removed: SSH agent is already initialized by webfactory/ssh-agent@v0.9.0
+            # ssh-add ~/.ssh/id_ed25519_authstarter1 # Removed: SSH agent is already initialized by webfactory/ssh-agent@v0.9.0
+
+            # Create target folder if missing
+            mkdir -p ~/auth.starter.1.codewithsky.co.ke
+            cd ~/auth.starter.1.codewithsky.co.ke
+
+            # Git setup
+            if [ ! -d ".git" ]; then
+                git init
+                git remote add origin git@github.com:Bkimking/php_auth_starter_1.git
+                git fetch origin
+                git checkout -f main
+            else
+                git fetch origin
+                git reset --hard origin/main
+            fi
+
+            # Laravel deployment
+            # composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            # php artisan db:seed
+            php artisan optimize:clear
+            php artisan optimize
+
+            echo "Deployment complete"
+          EOF
