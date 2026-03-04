@@ -155,7 +155,7 @@ Make sure these are installed on your computer:
 
 ### Step 1 — Clone or Download the Project
 ```bash
-git clone https://github.com/Bkimking/php_auth_starter_1
+git clone https://github.com/your-username/auth-project.git
 cd auth-project
 ```
 Or just download the ZIP and extract it.

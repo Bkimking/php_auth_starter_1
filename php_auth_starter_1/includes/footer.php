@@ -11,8 +11,7 @@
 <footer class="footer">
     <p>
         Auth Starter Project · Built with PHP 8 + MySQL ·
-        <a href="https://github.com/Bkimking/php_auth_starter_1" target="_blank">GitHub</a> ·
-        <a href="https://auth.starter.1.codewithsky.co.ke/" target="_blank">Live Demo</a>
+        <a href="https://github.com" target="_blank">GitHub</a>
     </p>
 </footer>
 
