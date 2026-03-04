@@ -51,7 +51,10 @@ function getDB(): PDO
     ];
 
     try {
-        return new PDO($dsn, $user, $pass, $options);
+        $pdo = new PDO($dsn, $user, $pass, $options);
+        // Set database timezone to match application timezone (UTC+3 for your location)
+        $pdo->exec("SET time_zone = '+03:00'");
+        return $pdo;
     } catch (PDOException $e) {
         // In production we'd log this error and show a generic message
         // For development, showing the message helps debug setup issues
