@@ -63,15 +63,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // Store the token and expiry in the database
                 $stmt = $pdo->prepare('
-                    UPDATE users
-                    SET reset_token = :token, reset_token_expiry = :expiry
-                    WHERE id = :id
-                ');
-                $stmt->execute([
-                    ':token'  => $token,
-                    ':expiry' => $expiry,
-                    ':id'     => $user['id'],
-                ]);
+    UPDATE users
+    SET reset_token        = :token,
+        reset_token_expiry = DATE_ADD(NOW(), INTERVAL 1 HOUR)
+    WHERE id = :id
+');
+$stmt->execute([
+    ':token' => $token,
+    ':id'    => $user['id'],
+]);
 
                 // Build the reset URL
                 $appUrl    = rtrim(getenv('APP_URL'), '/');
